@@ -1,0 +1,27 @@
+<%layout('layouts/boilerplate')%>
+    <h1 class="text-center">Index Page</h1>
+    <a class="m-4 d-inline-block btn btn-outline-primary " href="/campgrounds/new">add Campground</a><br>
+    <ul>
+        <% for (let i of data) { %>
+            <div class="card mb-4">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="<%= i.image %>" 
+                             class="img-fluid rounded-start h-100 w-100" 
+                             style="object-fit: cover;"
+                             alt="<%= i.title %>">
+                    </div>
+                    <div class="col-md-8 ">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= i.title %></h5>
+                            <p class="card-text"><%= i.description %></p>
+                            <p class="card-text"><%=i.location%></p>
+                            <a href="/campgrounds/<%= i.id %>" class="btn btn-primary">
+                                View <%= i.title %>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+    </ul>

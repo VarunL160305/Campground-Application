@@ -1,0 +1,56 @@
+<%layout('layouts/boilerplate')%>
+<div class="row">
+    <h1 class="text-center">Edit Campground</h1>
+    <div class="col-6 offset-3">
+        <form action="/campgrounds/<%=camp._id%>?_METHOD=PATCH" method="post" class="validated-form" novalidate>
+            
+            <div class="mb-3">
+                <label class="form-label" for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="title" value="<%=camp.title%>" required>
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="location" value="<%=camp.location%>" required> 
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>   
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="price">price</label>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="0.00" id="price" name="price" value="<%=camp.price%>" required>
+                </div>  
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>  
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" for="image">image url</label>
+                <input class="form-control" type="text" id="image" name="image" value="<%=camp.image%>" required>
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>    
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" type="text" id="description" name="description" required ></textarea>
+                <div class="valid-feedback">
+                    Looks Good!
+                </div>    
+            </div>
+
+            <button class="btn btn-outline-success mb-3">Update CampGround</button>
+        </form>
+        <button>
+            <a href="/campgrounds/<%=camp._id%>">Back</a>
+        </button>
+    </div>
+</div>
