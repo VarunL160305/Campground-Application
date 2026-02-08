@@ -7,11 +7,14 @@ const mongoose=require('mongoose');
 const ejsMate=require('ejs-mate');
 const joi=require('joi')
 const port=3000;
-require('dotenv').config();
+
 const campSchema=require('./schemas.js')
+const reviewSchema=require('./schemas.js')
 const campground=require('./models/campground.js')
+const Review=require('./models/review.js')
+
 const ExpressError=require('./utils/ExpressError.js')
-const CatchAsyncError=require('./utils/CatchAsyncError.js')
+const CatchAsyncError=require('./utils/CatchAsyncError.js');
 
 //DB Connection Part
 mongoose.connect('mongodb://localhost:27017/YelpCamp')
@@ -45,6 +48,19 @@ const validateCampground=function(req,res,next){
     }
 }
 
+const validateReview=function(req,res,next){
+    if(!req.body){
+        return next(new ExpressError('No data is available',400))
+    }
+    const{error}=reviewSchema.validate(req.body)
+    if(error){
+        const msg=error.details.map((er)=> er.message).join(',')
+        return next(new ExpressError(msg,400))
+    }
+    else{
+        next();
+    }
+}
 //Routing paths
 app.get('/',(req,res)=>{
     res.render('home');
@@ -67,7 +83,7 @@ app.get('/campgrounds/new',async(req,res)=>{
 
 app.get('/campgrounds/:id',CatchAsyncError(async(req,res,next)=>{
     const {id}=req.params
-    const camp=await campground.findById(id);
+    const camp=await campground.findById(id).populate('reviews');
     res.render('campgrounds/show.ejs',{camp})
 }))
 
@@ -89,6 +105,22 @@ app.delete('/campgrounds/:id',CatchAsyncError(async(req,res,next)=>{
     res.redirect('/campgrounds')
 }))
 
+app.post('/campgrounds/:id/reviews',validateReview,CatchAsyncError(async(req,res)=>{
+    const camp=await campground.findById(req.params.id);
+    const review=new Review(req.body)
+    camp.reviews.push(review)
+    await review.save()
+    await camp.save()
+    res.redirect(`/campgrounds/${camp._id}`)
+}))
+
+app.delete('/campgrounds/:id/reviews/:reviewId',async(req,res)=>{
+    const {id,reviewId}=req.params;
+    await campground.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
+    await Review.findByIdAndDelete(req.params.reviewId)
+    res.redirect(`/campgrounds/${id}`)
+})
+
 app.all(/(.*)/,(req,res,next)=>{
     next(new ExpressError("Page Not Found",404))
 })
@@ -98,7 +130,6 @@ app.use((err,req,res,next)=>{
     if(!err.message){err.message="Something went Wrong"}
     res.status(statusCode).render('error.ejs',{err})
 })
-
 
 app.listen(port,()=>{
     console.log('listening in port 3000');

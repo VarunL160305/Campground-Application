@@ -1,6 +1,6 @@
 <%layout('layouts/boilerplate')%>
 <div class="row">
-    <div class="col-md-8 offset-md-2 d-flex justify-content-center">
+    <div class="col-6 col-md-4 offset-sm-2 offset-md-1 d-flex justify-content-center flex-column">
         <div class="card mb-3" style="width: 22rem;">
             <img src="<%=camp.image%>" class="card-img-top" alt="...">
             <div class="card-body">
@@ -23,4 +23,46 @@
             </div>
         </div>
     </div>
+    <div class="col-6 col-md-4 offset-sm-2 offset-md-2">
+        <h2>Leave a Review</h2>
+        <form action="/campgrounds/<%=camp._id%>/reviews" class="mb-5 validated-form" method="post" novalidate>
+            <div class="mb-3">
+                <label class="form-label" for="rating">Rating</label><br>
+                <input class="form-range" type="range" min="1" max="5" name="rating" id="rating">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="body">Review</label>
+                <textarea class="form-control" name="body" id="body" rows="5" required></textarea>
+                <div class="valid-feedback">
+                    Looks Good!!
+                </div>
+            </div>
+            <button class="btn btn-outline-success">Submit</button>
+        </form>
+        <%for(let review of camp.reviews){%>
+            <div class="card mb-3">
+                <div class=" card-body">
+                    <h5 class=" card-title">Rating:<%=review.rating%></h5>
+                    <div class="mb-1">Review:<%=review.body%></div>
+                    <form action="/campgrounds/<%=camp._id%>/reviews/<%=review._id%>?_METHOD=DELETE" method="post">
+                        <button class="btn btn-outline-danger">delete</button>
+                    </form>
+                </div>
+            </div>
+        <%}%>
+    </div>
 </div>
+
+<style>
+    .form-control{
+        width: 350px;
+    }
+
+    .form-range{
+        width: 350px;
+    }
+
+    .card{
+        width: 350px;
+    }
+</style>
