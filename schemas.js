@@ -1,5 +1,6 @@
 const joi=require('joi');
 const review = require('./models/review');
+
 const campSchema=joi.object({
     title:joi.string().required(),
     price:joi.number().required().min(0),
@@ -13,5 +14,4 @@ const reviewSchema=joi.object({
     body:joi.string().required()
 }).required()
 
-module.exports=campSchema;
-module.exports=reviewSchema;
+module.exports={campSchema,reviewSchema};
