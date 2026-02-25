@@ -8,15 +8,20 @@ const ejsMate=require('ejs-mate');
 const joi=require('joi')
 const session=require('express-session')
 const flash=require('connect-flash');
+const passport=require('passport')
+const passportLocal=require('passport-local')
 const port=3000;
 
 const {campSchema}=require('./schemas.js')
 const {reviewSchema}=require('./schemas.js')
 const campground=require('./models/campground.js')
 const Review=require('./models/review.js')
+const User=require('./models/user.js')
+
 
 const campRoute=require('./routes/campgrounds.js')
 const reviewRoute=require('./routes/reviews.js')
+const userRoute=require('./routes/user.js')
 
 const ExpressError=require('./utils/ExpressError.js')
 const CatchAsyncError=require('./utils/CatchAsyncError.js');
@@ -50,10 +55,26 @@ const sessionConfig={
         maxAge:Date.now()+(1000*60*60*24*30)
     }
 }
+
 app.use(session(sessionConfig))
 app.use(flash())
 
+app.use(passport.initialize())
+app.use(passport.session())
+passport.use(new passportLocal(User.authenticate()))
+
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
+app.use((req,res,next)=>{
+    res.locals.success=req.flash('success')
+    res.locals.error=req.flash('error')
+    res.locals.currentUser=req.user
+    next()
+})
+
 //Routing paths
+app.use('/',userRoute)
 app.use('/campgrounds',campRoute)
 app.use('/campgrounds/:id/reviews',reviewRoute)
 

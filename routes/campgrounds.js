@@ -3,6 +3,8 @@ const router=express.Router();
 
 const {campSchema}=require('../schemas.js')
 
+const {isLoggedIn}=require('../middleware.js')
+
 const campground=require('../models/campground.js')
 
 const ExpressError=require('../utils/ExpressError.js')
@@ -22,17 +24,12 @@ const validateCampground=function(req,res,next){
     }
 }
 
-router.use((req,res,next)=>{
-    res.locals.success=req.flash('success')
-    res.locals.error=req.flash('error')
-    next()
-})
 
 router.get('/',async(req,res)=>{
     const data=await campground.find();
     res.render('campgrounds/index.ejs',{data})
 })
-router.post('/',validateCampground,CatchAsyncError(async(req,res,next)=>{
+router.post('/',isLoggedIn,validateCampground,CatchAsyncError(async(req,res,next)=>{
     const {title,location,description,price,image}=req.body;
     const addCamp=new campground ({title,location,description,price,image});
     await addCamp.save();
@@ -40,7 +37,7 @@ router.post('/',validateCampground,CatchAsyncError(async(req,res,next)=>{
     res.redirect(`/campgrounds/${addCamp._id}`)
 }))
 
-router.get('/new',async(req,res)=>{
+router.get('/new',isLoggedIn,async(req,res)=>{
     res.render('campgrounds/new.ejs');
 })
 
@@ -54,7 +51,7 @@ router.get('/:id',CatchAsyncError(async(req,res,next)=>{
     res.render('campgrounds/show.ejs',{camp})
 }))
 
-router.get('/:id/edit',CatchAsyncError(async(req,res,next)=>{
+router.get('/:id/edit',isLoggedIn,CatchAsyncError(async(req,res,next)=>{
     const {id}=req.params
     const camp=await campground.findById(id);
     if(!camp){
@@ -64,7 +61,7 @@ router.get('/:id/edit',CatchAsyncError(async(req,res,next)=>{
     res.render('campgrounds/edit.ejs',{camp})
 }))
 
-router.patch('/:id',validateCampground,CatchAsyncError(async(req,res,next)=>{
+router.patch('/:id',isLoggedIn,validateCampground,CatchAsyncError(async(req,res,next)=>{
     const {id}=req.params
     const {title,location,description,price,image}=req.body;
     await campground.findByIdAndUpdate(id,{title,location,description,price,image},{runvalidators:true})
@@ -72,7 +69,7 @@ router.patch('/:id',validateCampground,CatchAsyncError(async(req,res,next)=>{
     res.redirect(`/campgrounds/${id}`)
 }))
 
-router.delete('/:id',CatchAsyncError(async(req,res,next)=>{
+router.delete('/:id',isLoggedIn,CatchAsyncError(async(req,res,next)=>{
     await campground.findByIdAndDelete(req.params.id)
     req.flash('success',"successfully deleted Campground")
     res.redirect('/campgrounds')
