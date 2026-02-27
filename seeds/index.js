@@ -24,7 +24,8 @@ const seedDB=async()=>{
             title:`${sample(descriptors)} ${sample(places)}`,
             image:`https://picsum.photos/400?random=${Math.random()}`,
             description:'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero asperiores, ea consequatur voluptate facilis quo saepe labore, quod possimus reiciendis corporis maiores dicta minus vel numquam dolorem animi a eaque!',
-            price:`${randprice}`
+            price:`${randprice}`,
+            owner:'699880aaac720c1b3437e622'
         })
         await camps.save()
     }

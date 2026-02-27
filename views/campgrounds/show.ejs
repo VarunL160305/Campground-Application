@@ -9,44 +9,52 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item"><%=camp.location%></li>
+                <li class="list-group-item">Submitted By <%=camp.owner.username%></li>
                 <li class="list-group-item">₹<%=camp.price%>/night</li>
             </ul>
-            <div class="card-body d-flex justify-content-between">
-                <a class="btn btn-outline-info" href="/campgrounds/<%=camp._id%>/edit" class="card-link">Edit</a>
-                <form action="/campgrounds/<%=camp._id%>?_METHOD=delete" method="post">
-                    <button class="btn btn-outline-danger">delete</button>
-                </form>
-                <a class="btn btn-outline-primary" href="/campgrounds" class="card-link">back</a>
-            </div>
+            <%if(currentUser && camp.owner.equals(currentUser._id)){%>
+                <div class="card-body d-flex justify-content-between">
+                    <a class="btn btn-outline-info" href="/campgrounds/<%=camp._id%>/edit" class="card-link">Edit</a>
+                    <form action="/campgrounds/<%=camp._id%>?_METHOD=delete" method="post">
+                        <button class="btn btn-outline-danger">delete</button>
+                    </form>
+                    <a class="btn btn-outline-primary" href="/campgrounds" class="card-link">back</a>
+                </div>
+            <%}%>
             <div class="card-footer text-muted">
                 2 days ago
             </div>
         </div>
     </div>
     <div class="col-6 col-md-4 offset-sm-2 offset-md-2">
-        <h2>Leave a Review</h2>
-        <form action="/campgrounds/<%=camp._id%>/reviews" class="mb-5 validated-form" method="post" novalidate>
-            <div class="mb-3">
-                <label class="form-label" for="rating">Rating</label><br>
-                <input class="form-range" type="range" min="1" max="5" name="rating" id="rating">
-            </div>
-            <div class="mb-3">
-                <label class="form-label" for="body">Review</label>
-                <textarea class="form-control" name="body" id="body" rows="5" required></textarea>
-                <div class="valid-feedback">
-                    Looks Good!!
+        <%if(currentUser){%>
+            <h2>Leave a Review</h2>
+            <form action="/campgrounds/<%=camp._id%>/reviews" class="mb-5 validated-form" method="post" novalidate>
+                <div class="mb-3">
+                    <label class="form-label" for="rating">Rating</label><br>
+                    <input class="form-range" type="range" min="1" max="5" name="rating" id="rating">
                 </div>
-            </div>
-            <button class="btn btn-outline-success">Submit</button>
-        </form>
+                <div class="mb-3">
+                    <label class="form-label" for="body">Review</label>
+                    <textarea class="form-control" name="body" id="body" rows="5" required></textarea>
+                    <div class="valid-feedback">
+                        Looks Good!!
+                    </div>
+                </div>
+                <button class="btn btn-outline-success">Submit</button>
+            </form>
+        <%}%>
         <%for(let review of camp.reviews){%>
             <div class="card mb-3">
                 <div class=" card-body">
                     <h5 class=" card-title">Rating:<%=review.rating%></h5>
+                    <h6 class="card-subtitle mb-2 text-muted">by <%=review.owner.username%></h6>
                     <div class="mb-1">Review:<%=review.body%></div>
-                    <form action="/campgrounds/<%=camp._id%>/reviews/<%=review._id%>?_METHOD=DELETE" method="post">
-                        <button class="btn btn-outline-danger">delete</button>
-                    </form>
+                    <%if(currentUser && review.owner.equals(currentUser._id)){%>
+                        <form action="/campgrounds/<%=camp._id%>/reviews/<%=review._id%>?_METHOD=DELETE" method="post">
+                            <button class="btn btn-outline-danger">delete</button>
+                        </form>
+                    <%}%>
                 </div>
             </div>
         <%}%>

@@ -1,7 +1,7 @@
 const express=require('express');
 const router=express.Router({mergeParams:true});
 
-const {reviewSchema}=require('../schemas.js')
+const {validateReview,isLoggedIn,isReviewAuthor}=require('../middleware.js')
 
 const Review=require('../models/review.js')
 const campground=require('../models/campground.js')
@@ -9,23 +9,11 @@ const campground=require('../models/campground.js')
 const ExpressError=require('../utils/ExpressError.js')
 const CatchAsyncError=require('../utils/CatchAsyncError.js');
 
-const validateReview=function(req,res,next){
-    if(!req.body){
-        return next(new ExpressError('No data is available',400))
-    }
-    const{error}=reviewSchema.validate(req.body)
-    if(error){
-        const msg=error.details.map((er)=> er.message).join(',')
-        return next(new ExpressError(msg,400))
-    }
-    else{
-        next();
-    }
-}
 
-router.post('/',validateReview,CatchAsyncError(async(req,res)=>{
+router.post('/',isLoggedIn,validateReview,CatchAsyncError(async(req,res)=>{
     const camp=await campground.findById(req.params.id);
     const review=new Review(req.body)
+    review.owner=req.user._id
     camp.reviews.push(review)
     await review.save()
     await camp.save()
@@ -33,7 +21,7 @@ router.post('/',validateReview,CatchAsyncError(async(req,res)=>{
     res.redirect(`/campgrounds/${camp._id}`)
 }))
 
-router.delete('/:reviewId',async(req,res)=>{
+router.delete('/:reviewId',isLoggedIn,isReviewAuthor,async(req,res)=>{
     const {id,reviewId}=req.params;
     await campground.findByIdAndUpdate(id,{$pull:{reviews:reviewId}})
     await Review.findByIdAndDelete(req.params.reviewId)
