@@ -50,9 +50,7 @@ const sessionConfig={
     resave:false,
     saveUninitialized:true,
     cookie:{
-        httpOnly:true,
-        expires:Date.now()+(1000*60*60*24*30),
-        maxAge:Date.now()+(1000*60*60*24*30)
+        httpOnly:true
     }
 }
 
