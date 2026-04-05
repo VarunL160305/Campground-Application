@@ -50,7 +50,7 @@
 .starability-slot {
   display: block;
   position: relative;
-  width: 150px;
+  width: 250px;
   min-height: 60px;
   padding: 0;
   border: none;
@@ -109,6 +109,7 @@
 .starability-slot > label {
   position: relative;
   display: inline-block;
+  float: left;
   width: 30px;
   height: 30px;
   font-size: 0.1em;

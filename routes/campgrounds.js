@@ -1,5 +1,9 @@
 const express=require('express');
 const router=express.Router();
+const multer=require('multer')
+require('dotenv').config()
+const {storage}=require('../Cloudinary/index.js')
+const upload=multer({storage})
 
 const Campgrounds=require('../controllers/campgrounds.js')
 
@@ -19,9 +23,9 @@ router.get('/:id',CatchAsyncError(Campgrounds.showCampground))
 
 router.get('/:id/edit',isLoggedIn,isAuthor,CatchAsyncError(Campgrounds.renderEditCampgroundForm))
 
-router.post('/',isLoggedIn,validateCampground,CatchAsyncError(Campgrounds.createCampground))
+router.post('/',isLoggedIn,upload.array('image'),validateCampground,CatchAsyncError(Campgrounds.createCampground))
 
-router.patch('/:id',isLoggedIn,isAuthor,validateCampground,CatchAsyncError(Campgrounds.updateCampground))
+router.patch('/:id',isLoggedIn,isAuthor,upload.array('image'),validateCampground,CatchAsyncError(Campgrounds.updateCampground))
 
 router.delete('/:id',isLoggedIn,isAuthor,CatchAsyncError(Campgrounds.deleteCampground))
 

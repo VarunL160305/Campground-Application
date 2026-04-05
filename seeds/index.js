@@ -22,7 +22,16 @@ const seedDB=async()=>{
         const camps=new campground({
             location:`${cities[rand100].city},${cities[rand100].state}`,
             title:`${sample(descriptors)} ${sample(places)}`,
-            image:`https://picsum.photos/400?random=${Math.random()}`,
+            images:[
+                {
+                    url: 'https://res.cloudinary.com/dfsbfkagj/image/upload/v1772994951/YelpCamp/pij52i8guwpyffg74s4c.png',
+                    filename: 'YelpCamp/pij52i8guwpyffg74s4c',
+                },
+                {
+                    url: 'https://res.cloudinary.com/dfsbfkagj/image/upload/v1772994959/YelpCamp/n1p8y1hmimcrr2wtisph.png',
+                    filename: 'YelpCamp/n1p8y1hmimcrr2wtisph',
+                }
+            ],
             description:'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Libero asperiores, ea consequatur voluptate facilis quo saepe labore, quod possimus reiciendis corporis maiores dicta minus vel numquam dolorem animi a eaque!',
             price:`${randprice}`,
             owner:'699880aaac720c1b3437e622'
