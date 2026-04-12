@@ -1,5 +1,7 @@
 const campground=require('../models/campground.js')
 const {cloudinary}=require('../Cloudinary')
+const mapTiler=require('@maptiler/client')
+mapTiler.config.apiKey=process.env.MAPTILER_API_KEY
 
 module.exports.index=async(req,res)=>{
     const data=await campground.find();
@@ -11,10 +13,19 @@ module.exports.renderNewCampgroundForm=async(req,res)=>{
 }
 
 module.exports.createCampground=async(req,res,next)=>{
+    const geoData=await mapTiler.geocoding.forward(req.body.location,{limit:1})
+    if(!geoData.features || geoData.features.length==0){
+        req.flash('error','Please enter a valid location')
+        return res.redirect('/campgrounds/new')
+    }
     const {title,location,description,price,image}=req.body;
+
     const addCamp=new campground ({title,location,description,price,image,owner:req.user._id});
+    addCamp.geometry = geoData.features[0].geometry;
+    addCamp.location = geoData.features[0].place_name;
     addCamp.images=req.files.map(i=>({url:i.path,filename:i.filename}))
     await addCamp.save();
+
     req.flash('success',"successfully made a new Campground!")
     res.redirect(`/campgrounds/${addCamp._id}`)
 }
@@ -46,9 +57,11 @@ module.exports.renderEditCampgroundForm=async(req,res,next)=>{
 
 module.exports.updateCampground=async(req,res,next)=>{
     const {id}=req.params
-    console.log(req.body)
+    const geoData=await mapTiler.geocoding.forward(req.body.location,{limit:1})
     const {title,location,description,price,image}=req.body;
     const updateCamp=await campground.findByIdAndUpdate(id,{title,location,description,price,image},{runValidators:true})
+    updateCamp.geometry=geoData.features[0].geometry
+    updateCamp.location=geoData.features[0].place_name
     updateCamp.images.push(... req.files.map(i=>({url:i.path,filename:i.filename})))
     await updateCamp.save();
     if(req.body.deleteImages){

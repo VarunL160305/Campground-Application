@@ -1,4 +1,5 @@
 <%layout('layouts/boilerplate')%>
+    <div id="map" style="width: 100%; height: 500px"></div>
     <h1 class="text-center">Index Page</h1>
     <a class="m-4 d-inline-block btn btn-outline-primary " href="/campgrounds/new">add Campground</a><br>
     <ul>
@@ -25,3 +26,21 @@
             </div>
         <% } %>
     </ul>
+
+<%- "<script>" %>
+const maptilerApiKey = "<%- process.env.MAPTILER_API_KEY %>";
+const camp = {
+  type: "FeatureCollection",
+  features: <%- JSON.stringify(
+    data.map(camp => ({
+      type: "Feature",
+      geometry: camp.geometry,
+      properties: {
+        popUpMarkup: `<strong><a href="/campgrounds/${camp._id}">${camp.title}</a></strong><p>${camp.location}</p>`
+      }
+    }))
+  ) %>
+};
+<%- "</script>" %>
+
+<script src="/js/clusterMap.js"></script>
