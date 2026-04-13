@@ -27,7 +27,7 @@ const ExpressError=require('./utils/ExpressError.js')
 const CatchAsyncError=require('./utils/CatchAsyncError.js');
 
 //DB Connection Part
-mongoose.connect('mongodb://localhost:27017/YelpCamp-maptiler')
+mongoose.connect('mongodb://localhost:27017/YelpCamp')
 .then(()=>{
     console.log("Connection Successful to DB");
 })

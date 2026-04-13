@@ -4,7 +4,7 @@ const cities=require('./cities.js')
 const {places,descriptors}=require('./seedHelpers.js')
 
 //DB Connection Part
-mongoose.connect('mongodb://localhost:27017/YelpCamp-maptiler')
+mongoose.connect('mongodb://localhost:27017/YelpCamp')
 .then(()=>{
     console.log("Connection Successful to DB");
 })
@@ -20,7 +20,7 @@ const seedDB=async()=>{
         const rand100=Math.floor(Math.random()*100)
         const randprice=Math.floor(Math.random()*100)
         const camps=await new campground({
-            owner:"69dba5f9693fcbae71646a31",
+            owner:"699880aaac720c1b3437e622",
             location:`${cities[rand100].city},${cities[rand100].state}`,
             geometry: {
                 type: "Point",
