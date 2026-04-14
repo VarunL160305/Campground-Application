@@ -1,15 +1,17 @@
 //requiring required files
 const express=require('express');
 const app=express();
+const helmet=require('helmet');
 const path=require('path');
 const methodOverride=require('method-override')
 const mongoose=require('mongoose');
 const ejsMate=require('ejs-mate');
-const joi=require('joi')
-const session=require('express-session')
+const joi=require('joi');
+const session=require('express-session');
 const flash=require('connect-flash');
-const passport=require('passport')
-const passportLocal=require('passport-local')
+const passport=require('passport');
+const passportLocal=require('passport-local');
+const mongoSanitize=require('express-mongo-sanitize');
 const port=3000;
 
 const {campSchema}=require('./schemas.js')
@@ -17,6 +19,7 @@ const {reviewSchema}=require('./schemas.js')
 const campground=require('./models/campground.js')
 const Review=require('./models/review.js')
 const User=require('./models/user.js')
+const {scriptSrcUrls,connectSrcUrls,fontSrcUrls,styleSrcUrls}=require('./public/js/external.js')
 
 
 const campRoute=require('./routes/campgrounds.js')
@@ -44,13 +47,40 @@ app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(methodOverride('_METHOD'))
 app.use(express.static('public'))
+app.use(helmet({contentSecurityPolicy:false}))
+app.use(mongoSanitize({
+    replaceWith:'_'
+}))
+
+app.use(helmet.contentSecurityPolicy({
+    directives:{
+        defaultSrc:[],
+        connectSrc:["'self'",...connectSrcUrls],
+        scriptSrc:["'unsafe-inline'","'self'",...scriptSrcUrls],
+        styleSrc:["'self'","'unsafe-inline'",...styleSrcUrls],
+        workerSrc:["'self'","blob:"],
+        objectSrc:[],
+        imgSrc:[
+            "'self'",
+            "blob:",
+            "data:",
+            "https://res.cloudinary.com/dfsbfkagj/",
+            "https://images.unsplash.com"
+        ],
+        fontSrc:["'self'",...fontSrcUrls]
+    }
+}))
 
 const sessionConfig={
+    name:'session',
     secret:'thisshouldbeabettersecert',
     resave:false,
     saveUninitialized:true,
     cookie:{
-        httpOnly:true
+        httpOnly:true,
+        // secure:true,
+        expires:Date.now()+(1000*60*60*24*7),
+        maxAge:1000*60*60*24*7
     }
 }
 
@@ -81,7 +111,7 @@ app.get('/',(req,res)=>{
 })
 
 app.all(/(.*)/,(req,res,next)=>{
-    next(new ExpressError("Page Not Found",404))
+    res.render('404.ejs')
 })
 
 app.use((err,req,res,next)=>{

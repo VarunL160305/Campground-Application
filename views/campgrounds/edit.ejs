@@ -12,6 +12,9 @@
                         <div class="valid-feedback">
                             Looks Good!
                         </div>
+                        <div class="invalid-feedback">
+                            Title should not be empty
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -19,7 +22,10 @@
                         <input class="form-control" type="text" id="location" name="location" value="<%=camp.location%>" required> 
                         <div class="valid-feedback">
                             Looks Good!
-                        </div>   
+                        </div>
+                        <div class="invalid-feedback">
+                            Location should not be empty
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -43,6 +49,9 @@
                         <textarea class="form-control" type="text" id="description" name="description" required ><%=camp.description%></textarea>
                         <div class="valid-feedback">
                             Looks Good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Description should not be empty
                         </div>    
                     </div>
                     <div class="mb-3">

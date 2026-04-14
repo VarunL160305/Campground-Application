@@ -2,12 +2,12 @@
 <link rel="stylesheet" href="/css/stars.css">
 
 <div class="row">
-    <div class="col-6 col-md-4 offset-sm-2 offset-md-1 d-flex justify-content-center flex-column">
+    <div class="col-6 col-md-4 offset-sm-2 offset-md-1 d-flex justify-content-center flex-column mt-5">
         <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <% camp.images.forEach((img,i)=>{ %>
                     <div class="carousel-item <%= i===0 ? 'active' : '' %>">
-                        <img class="d-block w-100" src="<%= img.url %>" alt="">
+                        <img class="d-block w-100" src="<%= img.url %>" style="height: 250px; object-fit: cover;" alt="">
                     </div>
                 <% }) %>
             </div>
@@ -23,7 +23,7 @@
             <%}%>
         </div>
 
-        <div class="card mb-3" style="width: 22rem;">
+        <div class="card mb-3">
             <div class="card-body">
                 <h5 class="card-title"><%=camp.title%></h5>
                 <p class="card-text"><%=camp.description%></p>
@@ -47,7 +47,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-md-4 offset-sm-2 offset-md-2">
+    <div class="col-6 col-md-4 offset-sm-2 offset-md-2 mt-5">
         <div id="map" style="width: 100%; height: 300px;"></div>
         <%if(currentUser){%>
             <h2>Leave a Review</h2>
@@ -95,15 +95,7 @@
 </div>
 
 <style>
-    .form-control{
-        width: 350px;
-    }
-
     .form-range{
-        width: 350px;
-    }
-
-    .card{
         width: 350px;
     }
 </style>
