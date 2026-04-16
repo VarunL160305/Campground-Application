@@ -25,7 +25,7 @@ const reviewRoute=require('./routes/reviews.js')
 const userRoute=require('./routes/user.js')
 
 //DB Connection Part
-mongoose.connect('mongodb://localhost:27017/YelpCamp')
+mongoose.connect(process.env.MONGO_URL)
 .then(()=>{
     console.log("Connection Successful to DB");
 })
@@ -67,7 +67,7 @@ app.use(helmet.contentSecurityPolicy({
 }))
 
 const store = MongoStore.create({
-    mongoUrl:'mongodb://localhost:27017/YelpCamp',
+    mongoUrl:process.env.MONGO_URL,
     touchAfter: 24 * 60 * 60,
     crypto: {
         secret:process.env.SESSION_SECRET
@@ -79,7 +79,7 @@ const sessionConfig={
     name:'session',
     secret:process.env.SESSION_SECRET,
     resave:false,
-    saveUninitialized:true,
+    saveUninitialized:false,
     cookie:{
         httpOnly:true,
         // secure:true,
@@ -124,6 +124,4 @@ app.use((err,req,res,next)=>{
     res.status(statusCode).render('error.ejs',{err})
 })
 
-app.listen(port,()=>{
-    console.log('listening in port 3000');
-})
+module.exports = app;
