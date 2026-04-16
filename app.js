@@ -1,6 +1,7 @@
 //requiring required files
 const express=require('express');
 const app=express();
+require('dotenv').config();
 const helmet=require('helmet');
 const path=require('path');
 const methodOverride=require('method-override')
@@ -8,16 +9,13 @@ const mongoose=require('mongoose');
 const ejsMate=require('ejs-mate');
 const joi=require('joi');
 const session=require('express-session');
+const { MongoStore } = require('connect-mongo');
 const flash=require('connect-flash');
 const passport=require('passport');
 const passportLocal=require('passport-local');
 const mongoSanitize=require('express-mongo-sanitize');
 const port=3000;
 
-const {campSchema}=require('./schemas.js')
-const {reviewSchema}=require('./schemas.js')
-const campground=require('./models/campground.js')
-const Review=require('./models/review.js')
 const User=require('./models/user.js')
 const {scriptSrcUrls,connectSrcUrls,fontSrcUrls,styleSrcUrls}=require('./public/js/external.js')
 
@@ -26,16 +24,13 @@ const campRoute=require('./routes/campgrounds.js')
 const reviewRoute=require('./routes/reviews.js')
 const userRoute=require('./routes/user.js')
 
-const ExpressError=require('./utils/ExpressError.js')
-const CatchAsyncError=require('./utils/CatchAsyncError.js');
-
 //DB Connection Part
 mongoose.connect('mongodb://localhost:27017/YelpCamp')
 .then(()=>{
     console.log("Connection Successful to DB");
 })
-.catch(()=>{
-    console.log("Connection Error");
+.catch((e)=>{
+    console.log("Connection Error",e);
 })
 
 //Configuration of Set and Use
@@ -71,9 +66,18 @@ app.use(helmet.contentSecurityPolicy({
     }
 }))
 
+const store = MongoStore.create({
+    mongoUrl:'mongodb://localhost:27017/YelpCamp',
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret:process.env.SESSION_SECRET
+    }
+});
+
 const sessionConfig={
+    store,
     name:'session',
-    secret:'thisshouldbeabettersecert',
+    secret:process.env.SESSION_SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
