@@ -55,12 +55,15 @@ app.use(helmet.contentSecurityPolicy({
         styleSrc:["'self'","'unsafe-inline'",...styleSrcUrls],
         workerSrc:["'self'","blob:"],
         objectSrc:[],
-        imgSrc:[
+        imgSrc: [
             "'self'",
             "blob:",
             "data:",
             "https://res.cloudinary.com/dfsbfkagj/",
-            "https://images.unsplash.com"
+            "https://images.unsplash.com",
+            "https://source.unsplash.com",
+            "https://api.maptiler.com",
+            "https://tiles.maptiler.com"
         ],
         fontSrc:["'self'",...fontSrcUrls]
     }
