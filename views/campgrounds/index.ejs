@@ -27,7 +27,7 @@
     </ul>
 
 <%- "<script>" %>
-const maptilerApiKey = "<%- process.env.MAPTILER_API_KEY %>";
+const maptilerApiKey = "<%= MAPTILER_API_KEY %>";
 const camp = {
   type: "FeatureCollection",
   features: <%- JSON.stringify(

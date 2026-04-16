@@ -41,7 +41,7 @@ app.set('views',path.join(__dirname,'views'));
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(methodOverride('_METHOD'))
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(helmet({contentSecurityPolicy:false}))
 app.use(mongoSanitize({
     replaceWith:'_'
@@ -49,7 +49,7 @@ app.use(mongoSanitize({
 
 app.use(helmet.contentSecurityPolicy({
     directives:{
-        defaultSrc:[],
+        defaultSrc:["'self'"],
         connectSrc:["'self'",...connectSrcUrls],
         scriptSrc:["'unsafe-inline'","'self'",...scriptSrcUrls],
         styleSrc:["'self'","'unsafe-inline'",...styleSrcUrls],
@@ -62,6 +62,7 @@ app.use(helmet.contentSecurityPolicy({
             "https://res.cloudinary.com/dfsbfkagj/",
             "https://images.unsplash.com",
             "https://source.unsplash.com",
+            "https://*.unsplash.com",
             "https://api.maptiler.com",
             "https://tiles.maptiler.com"
         ],
@@ -128,3 +129,4 @@ app.use((err,req,res,next)=>{
 })
 
 module.exports = app;
+app.listen(3000,()=>{})
