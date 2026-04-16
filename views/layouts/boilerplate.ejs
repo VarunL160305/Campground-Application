@@ -11,7 +11,7 @@
 </head>
 <body class="d-flex flex-column vh-100">
     <nav>
-        <%-include('../partials/navbar.ejs')%>
+        <%- include('../partials/navbar.ejs', { currentUser }) %>
     </nav>
 
     <main class="container">
