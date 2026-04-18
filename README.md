@@ -4,7 +4,7 @@ YelpCamp is a full-stack web application that allows users to explore, create, r
 
 🚀 Live Demo
 
-👉 https://yelpcamp-sable.vercel.app/
+👉 https://yelpcamp-beryl.vercel.app
 
 📌 Project Overview
 
